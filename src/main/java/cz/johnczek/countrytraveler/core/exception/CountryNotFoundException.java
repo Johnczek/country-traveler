@@ -1,6 +1,6 @@
 package cz.johnczek.countrytraveler.core.exception;
 
-public class CountryNotFoundException extends BaseInternalServerErrorRestException {
+public class CountryNotFoundException extends BaseRestNotFoundException {
 
     private static final String EXCEPTION_MESSAGE_CODE = "error.countriesGraph.country.name.notFund";
 

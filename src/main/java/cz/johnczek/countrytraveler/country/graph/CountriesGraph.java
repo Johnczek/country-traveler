@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +15,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CountriesGraph implements Serializable {
+public class CountriesGraph {
 
     private final Map<String, CountryNode> countriesByName = new HashMap<>();
 

@@ -1,5 +1,6 @@
 package cz.johnczek.countrytraveler.country.graph;
 
+import cz.johnczek.countrytraveler.core.exception.CountryNotInCorrectFormatException;
 import cz.johnczek.countrytraveler.country.dto.CountryInputDto;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class CountriesGraphUnitTest {
@@ -86,7 +88,56 @@ class CountriesGraphUnitTest {
     @Nested
     class AddNode {
 
-        // TODO
+        @Test
+        void nullInput_exceptionThrown() {
+            CountriesGraph graph = new CountriesGraph();
+
+            assertThrows(CountryNotInCorrectFormatException.class, () -> graph.addNode(null));
+        }
+
+        @Test
+        void blankName_exceptionThrown() {
+            CountriesGraph graph = new CountriesGraph();
+
+            assertThrows(CountryNotInCorrectFormatException.class, () -> graph.addNode(getCountryInput("", null)));
+        }
+
+        @Test
+        void countryWithoutNeighbours_nodeAdded() {
+            CountriesGraph graph = new CountriesGraph();
+
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNull();
+            graph.addNode(getCountryInput(DUMMY_COUNTRY_NAME, null));
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNotNull();
+        }
+
+        @Test
+        void countryWithOneNeighbourNotPresent_twoNodesAdded() {
+            CountriesGraph graph = new CountriesGraph();
+
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNull();
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2)).isNull();
+
+            graph.addNode(getCountryInput(DUMMY_COUNTRY_NAME, List.of(DUMMY_COUNTRY_NAME2)));
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNotNull();
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2)).isNotNull();
+        }
+
+        @Test
+        void countryWithOneNeighbourPresentWithoutConnection_oneNodeAddedOneUpdated() {
+            CountriesGraph graph = new CountriesGraph();
+
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNull();
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2)).isNull();
+
+            graph.addNode(getCountryInput(DUMMY_COUNTRY_NAME2, null));
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2)).isNotNull();
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2).getNeighbours()).isEmpty();
+
+            graph.addNode(getCountryInput(DUMMY_COUNTRY_NAME, List.of(DUMMY_COUNTRY_NAME2)));
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME)).isNotNull();
+            assertThat(graph.getCountryByName(DUMMY_COUNTRY_NAME2).getNeighbours()).hasSize(1);
+        }
     }
 
     private CountryInputDto getCountryInput(String name, List<String> neighbours) {

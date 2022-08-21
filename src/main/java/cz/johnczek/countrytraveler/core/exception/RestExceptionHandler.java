@@ -38,7 +38,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return prepareResponseEntity(exception, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({BaseRestException.class, BaseInternalServerErrorRestException.class})
+    @ExceptionHandler(BaseInternalServerErrorRestException.class)
+    public ResponseEntity<BaseRestResponse> handleInternalError(BaseRestException exception) {
+        return prepareResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BaseRestException.class)
     public ResponseEntity<String> handleDefault(Throwable t) {
         return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -67,6 +72,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private RestMessage getMessage(String messageCode, Object[] args) {
         return RestMessage.builder()
                 .value(messageSource.getMessage(messageCode, args, DEFAULT_MESSAGE, Locale.getDefault()))
+                .messageCode(messageCode)
                 .messageType(RestMessageTypeEnum.ERROR)
                 .build();
     }

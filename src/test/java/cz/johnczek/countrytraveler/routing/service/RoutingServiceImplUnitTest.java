@@ -31,7 +31,7 @@ class RoutingServiceImplUnitTest {
     private static final String DUMMY_SOURCE = "CZE";
     private static final String DUMMY_DESTINATION = "ESP";
 
-    private static final String DUMMY_COUNTRY = "GET";
+    private static final String DUMMY_COUNTRY = "GER";
 
     @InjectMocks
     private RoutingServiceImpl instance;
@@ -45,9 +45,6 @@ class RoutingServiceImplUnitTest {
 
     @Nested
     class FindShortestPathBetweenCountries {
-
-        // TODO
-
         @Test
         void sameDestinationAndSource_oneListRoute() {
             ShortestPathResponse result = instance.findShortestPathBetweenCountries(DUMMY_SOURCE, DUMMY_SOURCE);

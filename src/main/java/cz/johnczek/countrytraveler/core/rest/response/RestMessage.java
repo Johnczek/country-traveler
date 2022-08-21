@@ -12,4 +12,6 @@ public class RestMessage {
     private RestMessageTypeEnum messageType;
 
     private String value;
+
+    private String messageCode;
 }
